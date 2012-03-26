@@ -17,3 +17,8 @@ execute "install whisper" do
   creates "/usr/local/lib/python#{pyver}/dist-packages/whisper-#{version}.egg-info"
   cwd "/usr/src/whisper-#{version}"
 end
+
+execute 'install whisper utils' do
+  command "cp /usr/src/whisper-#{version}/bin/* /opt/graphite/bin"
+  creates '/opt/graphite/bin/rrd2whisper.py' # and more
+end
