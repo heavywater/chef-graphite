@@ -3,30 +3,28 @@ include_recipe "apache2::mod_python"
 version = node[:graphite][:version]
 pyver = node[:graphite][:python_version]
 
-package "python-cairo-dev"
-package "python-django"
-package "python-django-tagging"
-package "python-memcache"
-package "python-rrdtool"
+package node[:graphite][:package][:python_cairo_dev]
+package node[:graphite][:package][:python_django]
+package node[:graphite][:package][:python_django_tagging]
+package node[:graphite][:package][:python_memcache]
 
-remote_file "/usr/src/graphite-web-#{version}.tar.gz" do
-  source node[:graphite][:graphite_web][:uri]
+if platform? 'redhat','scientific','amazon','fedora','centos'
+  package 'bitmap-fixed-fonts'
+else
+  # can't find this package in any rhel-related repository
+  package "python-rrdtool"
+end
+
+ark 'graphite-web' do
+  version node[:graphite][:version]
+  path '/usr/src'
+  url node[:graphite][:graphite_web][:uri]
   checksum node[:graphite][:graphite_web][:checksum]
+  creates "/opt/graphite/lib/graphite_web-#{version}-py#{pyver}.egg-info"
+  action [:install, :setup_py]
 end
 
-execute "untar graphite-web" do
-  command "tar xzf graphite-web-#{version}.tar.gz"
-  creates "/usr/src/graphite-web-#{version}"
-  cwd "/usr/src"
-end
-
-execute "install graphite-web" do
-  command "python setup.py install"
-  creates "/opt/graphite/webapp/graphite_web-#{version}-py#{pyver}.egg-info"
-  cwd "/usr/src/graphite-web-#{version}"
-end
-
-template "/etc/apache2/sites-available/graphite" do
+template node[:graphite][:apache_vhost_path] do
   source "graphite-vhost.conf.erb"
 end
 
