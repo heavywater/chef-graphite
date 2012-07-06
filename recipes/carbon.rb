@@ -19,7 +19,7 @@ template "/opt/graphite/conf/carbon.conf" do
   variables( :line_receiver_interface => node[:graphite][:carbon][:line_receiver_interface],
              :pickle_receiver_interface => node[:graphite][:carbon][:pickle_receiver_interface],
              :cache_query_interface => node[:graphite][:carbon][:cache_query_interface] )
-#  notifies :restart, "service[carbon-cache]"
+  notifies :restart, "service[carbon-cache]"
 end
 
 template "/opt/graphite/conf/storage-schemas.conf" do
@@ -44,4 +44,23 @@ if platform? 'ubuntu', 'debian'
   runit_service "carbon-cache" do
     finish_script true
   end
+else
+  # redhat disables shell access for apache user by default
+  user node['apache']['user'] do
+    shell "/bin/bash"
+  end
+
+  template "/etc/rc.d/init.d/carbon-cache" do
+    source "init.el.erb"
+    owner "root"
+    group "root"
+    mode "0755"
+  end
+
+  service "carbon-cache" do
+    supports :restart => true, :reload => true, :status => true
+    action [:enable, :start]
+  end
+
 end
+
