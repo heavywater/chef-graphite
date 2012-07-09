@@ -12,7 +12,7 @@ ark 'carbon' do
   creates "/opt/graphite/lib/carbon-#{version}-py#{pyver}.egg-info"
   action [:install, :setup_py]
 end
-
+/opt/graphite/lib/carbon-0.9.9-py2.6.egg-info
 template "/opt/graphite/conf/carbon.conf" do
   owner node['apache']['user']
   group node['apache']['group']

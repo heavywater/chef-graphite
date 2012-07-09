@@ -20,7 +20,7 @@ ark 'graphite-web' do
   path '/usr/src'
   url node[:graphite][:graphite_web][:uri]
   checksum node[:graphite][:graphite_web][:checksum]
-  creates "/opt/graphite/lib/graphite_web-#{version}-py#{pyver}.egg-info"
+  creates "/opt/graphite/webapp/graphite_web-#{version}-py#{pyver}.egg-info"
   action [:install, :setup_py]
 end
 
