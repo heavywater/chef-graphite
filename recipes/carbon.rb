@@ -1,6 +1,3 @@
-package "python-twisted"
-package "python-simplejson"
-
 version = node[:graphite][:version]
 pyver = node[:graphite][:python_version]
 
@@ -21,18 +18,35 @@ execute "install carbon" do
   cwd "/usr/src/carbon-#{version}"
 end
 
+service "carbon-cache" do
+  supports :status => true, :start => true, :stop => true
+end
+
+#Create init script for RH or DEB
+template "/etc/init.d/carbon-cache" do
+  source "carbon-cache.init.erb"
+  owner "root"
+  group "root"
+  mode "0755"
+  notifies :enable, "service[carbon-cache]"
+  notifies :start, "service[carbon-cache]"
+end
+
 template "/opt/graphite/conf/carbon.conf" do
   owner node['apache']['user']
   group node['apache']['group']
-  variables( :line_receiver_interface => node[:graphite][:carbon][:line_receiver_interface],
+  variables( :local_data_dir => node[:graphite][:carbon][:local_data_dir],
+             :line_receiver_interface => node[:graphite][:carbon][:line_receiver_interface],
              :pickle_receiver_interface => node[:graphite][:carbon][:pickle_receiver_interface],
              :cache_query_interface => node[:graphite][:carbon][:cache_query_interface] )
+  mode "0644"
   notifies :restart, "service[carbon-cache]"
 end
 
 template "/opt/graphite/conf/storage-schemas.conf" do
   owner node['apache']['user']
   group node['apache']['group']
+  mode "0644"
 end
 
 execute "carbon: change graphite storage permissions to apache user" do
