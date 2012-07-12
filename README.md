@@ -2,12 +2,14 @@ Description
 ===========
 
 Installs and configures Graphite http://graphite.wikidot.com/
+Has been updated to install Graphite 0.9.10
 
 Requirements
 ============
 
 * Ubuntu 10.04 (Lucid) - with default settings
 * Ubuntu 11.10 (Oneiric) - change node[:graphite][:python_version] to "2.7"
+* CentOS 6.2  - with default settings
 
 Attributes
 ==========
