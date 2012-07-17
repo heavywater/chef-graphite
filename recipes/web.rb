@@ -24,6 +24,12 @@ ark 'graphite-web' do
   action [:install, :setup_py]
 end
 
+template "/opt/graphite/webapp/graphite/local_settings.py" do
+  source "local_settings.py.erb"
+  owner node['apache']['user']
+  group node['apache']['group']
+end
+
 template node[:graphite][:apache_vhost_path] do
   source "graphite-vhost.conf.erb"
 end
