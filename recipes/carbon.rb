@@ -12,7 +12,7 @@ ark 'carbon' do
   creates "/opt/graphite/lib/carbon-#{version}-py#{pyver}.egg-info"
   action [:install, :setup_py]
 end
-/opt/graphite/lib/carbon-0.9.9-py2.6.egg-info
+
 template "/opt/graphite/conf/carbon.conf" do
   owner node['apache']['user']
   group node['apache']['group']
@@ -50,11 +50,11 @@ else
     shell "/bin/bash"
   end
 
-  template "/etc/rc.d/init.d/carbon-cache" do
+  template "/etc/init.d/carbon-cache" do
     source "init.el.erb"
     owner "root"
     group "root"
-    mode "0755"
+    mode "0774"
   end
 
   service "carbon-cache" do
