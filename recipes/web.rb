@@ -28,6 +28,7 @@ template "/opt/graphite/webapp/graphite/local_settings.py" do
   source "local_settings.py.erb"
   owner node['apache']['user']
   group node['apache']['group']
+  mode "0775"
 end
 
 template node[:graphite][:apache_vhost_path] do
