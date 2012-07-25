@@ -18,7 +18,8 @@ template "/opt/graphite/conf/carbon.conf" do
   group node['apache']['group']
   variables( :line_receiver_interface => node[:graphite][:carbon][:line_receiver_interface],
              :pickle_receiver_interface => node[:graphite][:carbon][:pickle_receiver_interface],
-             :cache_query_interface => node[:graphite][:carbon][:cache_query_interface] )
+             :cache_query_interface => node[:graphite][:carbon][:cache_query_interface],
+             :max_updates_per_second => node[:graphite][:carbon][:max_updates_per_second] )
   notifies :restart, "service[carbon-cache]"
 end
 

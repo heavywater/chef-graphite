@@ -17,6 +17,8 @@ default[:graphite][:carbon][:cache_query_interface] =     "127.0.0.1"
 default[:graphite][:password] = "change_me"
 default[:graphite][:url] = "graphite"
 default[:graphite][:web][:time_zone] = "UTC"
+default[:graphite][:carbon][:max_updates_per_second] = 1000
+
 
 case platform
 when 'ubuntu','debian'
