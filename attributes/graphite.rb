@@ -36,3 +36,10 @@ when 'redhat','scientific','amazon','fedora','centos'
   default[:graphite][:package][:python_memcache] = 'python-memcached'
   default[:graphite][:package][:python_rrdtool] = 'python-rrdtool'
 end
+
+default['graphite']['schema'] = {
+  :all => {
+    :pattern => ".*",
+    :retentions => "60:200800,900:63000"
+  }
+}

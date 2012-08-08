@@ -1,4 +1,8 @@
-[catchall]
-priority = 0
-pattern = ^.*
-retentions = 60:100800,900:63000
+<% node[:graphite][:schema].each do |(name, options)| %>
+[<%= name.to_s %>]
+ <% unless options[:priority].nil? %>
+priority = <%= options[:priority] %>
+ <% end %>
+pattern = <%= options[:pattern] %>
+retentions = <%= options[:retentions] %>
+<% end %>
