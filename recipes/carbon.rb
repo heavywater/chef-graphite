@@ -4,21 +4,13 @@ package "python-simplejson"
 version = node[:graphite][:version]
 pyver = node[:graphite][:python_version]
 
-remote_file "/usr/src/carbon-#{version}.tar.gz" do
-  source node[:graphite][:carbon][:uri]
+ark 'carbon' do
+  version node[:graphite][:version]
+  path '/usr/src'
+  url node[:graphite][:carbon][:uri]
   checksum node[:graphite][:carbon][:checksum]
-end
-
-execute "untar carbon" do
-  command "tar xzf carbon-#{version}.tar.gz"
-  creates "/usr/src/carbon-#{version}"
-  cwd "/usr/src"
-end
-
-execute "install carbon" do
-  command "python setup.py install"
   creates "/opt/graphite/lib/carbon-#{version}-py#{pyver}.egg-info"
-  cwd "/usr/src/carbon-#{version}"
+  action [:install, :setup_py]
 end
 
 template "/opt/graphite/conf/carbon.conf" do
@@ -26,7 +18,8 @@ template "/opt/graphite/conf/carbon.conf" do
   group node['apache']['group']
   variables( :line_receiver_interface => node[:graphite][:carbon][:line_receiver_interface],
              :pickle_receiver_interface => node[:graphite][:carbon][:pickle_receiver_interface],
-             :cache_query_interface => node[:graphite][:carbon][:cache_query_interface] )
+             :cache_query_interface => node[:graphite][:carbon][:cache_query_interface],
+             :max_updates_per_second => node[:graphite][:carbon][:max_updates_per_second] )
   notifies :restart, "service[carbon-cache]"
 end
 
@@ -48,6 +41,27 @@ directory "/opt/graphite/lib/twisted/plugins/" do
   group node['apache']['group']
 end
 
-runit_service "carbon-cache" do
-  finish_script true
+if platform? 'ubuntu', 'debian'
+  runit_service "carbon-cache" do
+    finish_script true
+  end
+else
+  # redhat disables shell access for apache user by default
+  user node['apache']['user'] do
+    shell "/bin/bash"
+  end
+
+  template "/etc/init.d/carbon-cache" do
+    source "init.el.erb"
+    owner "root"
+    group "root"
+    mode "0774"
+  end
+
+  service "carbon-cache" do
+    supports :restart => true, :reload => true, :status => true
+    action [:enable, :start]
+  end
+
 end
+
