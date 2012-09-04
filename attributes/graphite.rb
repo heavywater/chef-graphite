@@ -9,6 +9,8 @@ default[:graphite][:whisper][:checksum] = "66c05eafe8d86"
 
 default[:graphite][:graphite_web][:uri] = "http://launchpadlibrarian.net/82112308/graphite-web-#{node[:graphite][:version]}.tar.gz"
 default[:graphite][:graphite_web][:checksum] = "cc78bab7fb26b"
+default[:graphite][:graphite_web][:port] = 80
+default[:graphite][:graphite_web][:use_mod_wsgi] = false
 
 default[:graphite][:carbon][:line_receiver_interface] =   "127.0.0.1"
 default[:graphite][:carbon][:pickle_receiver_interface] = "127.0.0.1"

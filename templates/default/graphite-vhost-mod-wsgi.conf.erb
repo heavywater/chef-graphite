@@ -1,0 +1,32 @@
+# You may need to manually edit this file to fit your needs.
+# This configuration assumes the default installation prefix
+# of /opt/graphite/, if you installed graphite somewhere else
+# you will need to change all the occurances of /opt/graphite/
+# in this file to your chosen install location.
+
+<% if node[:graphite][:graphite_web][:port] != 80 && node[:graphite][:graphite_web][:port] != 443 %>
+Listen <%= node[:graphite][:graphite_web][:port] %>
+<% end %>
+
+<VirtualHost *:<%= node[:graphite][:graphite_web][:port] %>>
+  DocumentRoot /opt/graphite/webapp
+  WSGIScriptAlias / /opt/graphite/conf/graphite.wsgi
+
+  WSGIDaemonProcess graphite user=www-data group=www-data threads=25
+  WSGIProcessGroup graphite
+
+  <Directory /opt/graphite/webapp>
+    Order deny,allow
+    Allow from all
+    </Directory>
+
+  # NOTE: In order for the django admin site media to work you
+  # must change @DJANGO_ROOT@ to be the path to your django
+  # installation, which is probably something like:
+  # /usr/lib/python2.6/site-packages/django
+  Alias /media/ "@DJANGO_ROOT@/contrib/admin/media/"
+  <Directory @DJANGO_ROOT@/contrib/admin/media>
+    Order deny,allow
+    Allow from all
+  </Directory>
+</VirtualHost>

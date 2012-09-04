@@ -8,6 +8,10 @@
 # you will need to change all the occurances of /opt/graphite/
 # in this file to your chosen install location.
 
+<% if node[:graphite][:graphite_web][:port] != 80 && node[:graphite][:graphite_web][:port] != 443 %>
+Listen <%= node[:graphite][:graphite_web][:port] %>
+<% end %>
+
 <VirtualHost *:80>
         ServerName <%= node[:graphite][:url] %>
         DocumentRoot "/opt/graphite/webapp"
