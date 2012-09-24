@@ -8,7 +8,7 @@
 # you will need to change all the occurances of <%= node[:graphite][:base_dir] %>/
 # in this file to your chosen install location.
 
-<VirtualHost *:80>
+<VirtualHost *:<%= node[:graphite][:graphite_web][:http_port]%>>
         ServerName <%= node[:graphite][:url] %>
         DocumentRoot "<%= node[:graphite][:base_dir] %>/webapp"
         ErrorLog <%= node[:graphite][:base_dir] %>/storage/log/webapp/error.log
