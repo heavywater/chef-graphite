@@ -15,6 +15,7 @@
         CustomLog <%= node[:graphite][:base_dir] %>/storage/log/webapp/access.log common
 
         <Location "/">
+                <%= node[:graphite][:graphite_web][:additional_vhost_config] %>
                 SetHandler python-program
                 PythonPath "['<%= node[:graphite][:base_dir] %>/webapp'] + sys.path"
                 PythonHandler django.core.handlers.modpython

@@ -17,6 +17,7 @@ Attributes
 * `node[:graphite][:python_version]` sets the version to install
 * `node[:graphite][:base_dir]` sets the base directory to install. Defaults to "/opt/graphite"
 * `node[:graphite][:graphite_web][:http_port]` sets the port for the vhost to listen on
+* `node[:graphite][:graphite_web][:additional_vhost_config` adds the following to the vhost config under the /Location block
 
 For more details look in the attributes/defaults section
 
