@@ -17,11 +17,11 @@ end
 
 execute "install carbon" do
   command "python setup.py install"
-  creates "/opt/graphite/lib/carbon-#{version}-py#{pyver}.egg-info"
+  creates "#{node[:graphite][:base_dir]}/lib/carbon-#{version}-py#{pyver}.egg-info"
   cwd "/usr/src/carbon-#{version}"
 end
 
-template "/opt/graphite/conf/carbon.conf" do
+template "#{node[:graphite][:base_dir]}/conf/carbon.conf" do
   owner node['apache']['user']
   group node['apache']['group']
   variables( :line_receiver_interface => node[:graphite][:carbon][:line_receiver_interface],
@@ -30,20 +30,20 @@ template "/opt/graphite/conf/carbon.conf" do
   notifies :restart, "service[carbon-cache]"
 end
 
-template "/opt/graphite/conf/storage-schemas.conf" do
+template "#{node[:graphite][:base_dir]}/conf/storage-schemas.conf" do
   owner node['apache']['user']
   group node['apache']['group']
 end
 
 execute "carbon: change graphite storage permissions to apache user" do
-  command "chown -R #{node['apache']['user']}:#{node['apache']['group']} /opt/graphite/storage"
+  command "chown -R #{node['apache']['user']}:#{node['apache']['group']} #{node[:graphite][:base_dir]}/storage"
   only_if do
-    f = File.stat("/opt/graphite/storage")
+    f = File.stat("#{node[:graphite][:base_dir]}/storage")
     f.uid == 0 and f.gid == 0
   end
 end
 
-directory "/opt/graphite/lib/twisted/plugins/" do
+directory "#{node[:graphite][:base_dir]}/lib/twisted/plugins/" do
   owner node['apache']['user']
   group node['apache']['group']
 end

@@ -4,19 +4,19 @@
 
 # You may need to manually edit this file to fit your needs.
 # This configuration assumes the default installation prefix
-# of /opt/graphite/, if you installed graphite somewhere else
-# you will need to change all the occurances of /opt/graphite/
+# of <%= node[:graphite][:base_dir] %>/, if you installed graphite somewhere else
+# you will need to change all the occurances of <%= node[:graphite][:base_dir] %>/
 # in this file to your chosen install location.
 
 <VirtualHost *:80>
         ServerName <%= node[:graphite][:url] %>
-        DocumentRoot "/opt/graphite/webapp"
-        ErrorLog /opt/graphite/storage/log/webapp/error.log
-        CustomLog /opt/graphite/storage/log/webapp/access.log common
+        DocumentRoot "<%= node[:graphite][:base_dir] %>/webapp"
+        ErrorLog <%= node[:graphite][:base_dir] %>/storage/log/webapp/error.log
+        CustomLog <%= node[:graphite][:base_dir] %>/storage/log/webapp/access.log common
 
         <Location "/">
                 SetHandler python-program
-                PythonPath "['/opt/graphite/webapp'] + sys.path"
+                PythonPath "['<%= node[:graphite][:base_dir] %>/webapp'] + sys.path"
                 PythonHandler django.core.handlers.modpython
                 SetEnv DJANGO_SETTINGS_MODULE graphite.settings
                 PythonDebug Off

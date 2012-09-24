@@ -22,7 +22,7 @@ end
 
 execute "install graphite-web" do
   command "python setup.py install"
-  creates "/opt/graphite/webapp/graphite_web-#{version}-py#{pyver}.egg-info"
+  creates "#{node[:graphite][:base_dir]}/webapp/graphite_web-#{version}-py#{pyver}.egg-info"
   cwd "/usr/src/graphite-web-#{version}"
 end
 
@@ -32,38 +32,38 @@ end
 
 apache_site "graphite"
 
-directory "/opt/graphite/storage" do
+directory "#{node[:graphite][:base_dir]}/storage" do
   owner node['apache']['user']
   group node['apache']['group']
 end
 
-directory '/opt/graphite/storage/log' do
+directory "#{node[:graphite][:base_dir]}/storage/log" do
   owner node['apache']['user']
   group node['apache']['group']
 end
 
 %w{ webapp whisper }.each do |dir|
-  directory "/opt/graphite/storage/log/#{dir}" do
+  directory "#{node[:graphite][:base_dir]}/storage/log/#{dir}" do
     owner node['apache']['user']
     group node['apache']['group']
   end
 end
 
-cookbook_file "/opt/graphite/bin/set_admin_passwd.py" do
+cookbook_file "#{node[:graphite][:base_dir]}/bin/set_admin_passwd.py" do
   mode "755"
 end
 
-cookbook_file "/opt/graphite/storage/graphite.db" do
+cookbook_file "#{node[:graphite][:base_dir]}/storage/graphite.db" do
   action :create_if_missing
   notifies :run, "execute[set admin password]"
 end
 
 execute "set admin password" do
-  command "/opt/graphite/bin/set_admin_passwd.py root #{node[:graphite][:password]}"
+  command "#{node[:graphite][:base_dir]}/bin/set_admin_passwd.py root #{node[:graphite][:password]}"
   action :nothing
 end
 
-file "/opt/graphite/storage/graphite.db" do
+file "#{node[:graphite][:base_dir]}/storage/graphite.db" do
   owner node['apache']['user']
   group node['apache']['group']
   mode "644"

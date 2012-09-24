@@ -13,6 +13,11 @@ Attributes
 ==========
 
 * `node[:graphite][:password]` sets the default password for graphite "root" user.
+* `node[:graphite][:version]` sets the version to install
+* `node[:graphite][:python_version]` sets the version to install
+* `node[:graphite][:base_dir]` sets the base directory to install. Defults to "/opt/graphite"
+
+For more details look in the attributes/defaults section
 
 Usage
 =====
