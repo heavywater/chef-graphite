@@ -58,6 +58,7 @@ stop(){
             echo "Carbon did not stop yet. Sleeping longer, then force killing it...";
             sleep 20;
             /usr/bin/pkill -9 -f "carbon-${CARBON_DAEMON}.py --instance=${INSTANCE}";
+            rm -f "$GRAPHITE_DIR/storage/carbon-cache-$INSTANCE.pid"
         fi;
 
         if [ $? -eq 0 ]; then
